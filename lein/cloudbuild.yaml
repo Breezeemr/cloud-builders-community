@@ -1,0 +1,24 @@
+# In this directory, run the following command to build this builder.
+# $ gcloud builds submit . --config=cloudbuild.yaml
+
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'build'
+  - '--build-arg=BASE_IMAGE=gcr.io/cloud-builders/javac:8'
+  - '--build-arg=LEIN_VERSION=2.9.1'
+  - '--tag=gcr.io/$PROJECT_ID/lein:2.9.1-jdk-8'
+  - '.'
+  waitFor: ['-']
+
+# Tag the default 'latest' version
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'tag'
+  - 'gcr.io/$PROJECT_ID/lein:2.9.1-jdk-8'
+  - 'gcr.io/$PROJECT_ID/lein'
+
+images:
+- 'gcr.io/$PROJECT_ID/lein'
+- 'gcr.io/$PROJECT_ID/lein:2.9.1-jdk-8'
+tags: ['cloud-builders-community']
